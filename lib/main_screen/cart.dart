@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/main_screen/customer_home_screen.dart';
 
 import '../widgets/appBar_widgets.dart';
+import '../widgets/yellow_button.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({Key? key}) : super(key: key);
+  final Widget? back;
+  const CartScreen({Key? key, this.back}) : super(key: key);
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -17,6 +18,7 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
+        leading: widget.back,
         backgroundColor: Colors.white,
         title: const AppBarTitle(title: 'Cart'),
         actions: [
@@ -45,10 +47,10 @@ class _CartScreenState extends State<CartScreen> {
               child: MaterialButton(
                   minWidth: MediaQuery.of(context).size.width * 0.6,
                   onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CustomerHomeScreen()));
+                    Navigator.canPop(context)
+                        ? Navigator.pop(context)
+                        : Navigator.pushReplacementNamed(
+                            context, '/customer_home');
                   },
                   child: const Text(
                     'Continue Shopping',
@@ -78,14 +80,10 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ],
             ),
-            Container(
-              height: 35,
-              width: MediaQuery.of(context).size.width * 0.45,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: Colors.yellow),
-              child: MaterialButton(
-                  onPressed: () {}, child: const Text('CHECK OUT')),
+            YellowButton(
+              btnLabel: 'CHECK OUT',
+              onPressed: () {},
+              width: 0.45,
             )
           ],
         ),

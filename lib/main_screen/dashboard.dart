@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:multi_store_app/dashboard_components/balance.dart';
+import 'package:multi_store_app/dashboard_components/edit_profile.dart';
+import 'package:multi_store_app/dashboard_components/manage_products.dart';
+import 'package:multi_store_app/dashboard_components/my_store.dart';
+import 'package:multi_store_app/dashboard_components/statistics.dart';
+import 'package:multi_store_app/dashboard_components/supplier_orders.dart';
 import 'package:multi_store_app/widgets/appBar_widgets.dart';
 
 List<String> label = [
@@ -18,6 +24,14 @@ List<IconData> icons = [
   Icons.attach_money,
   Icons.show_chart,
 ];
+List<Widget> pages = [
+  const MyStore(),
+  const SupplierOrders(),
+  const EditProfile(),
+  const ManageBusiness(),
+  const Balance(),
+  const Statistics()
+];
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -32,7 +46,12 @@ class DashboardScreen extends StatelessWidget {
         title: const AppBarTitle(title: 'Dashboard'),
         actions: [
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/welcome_screen',
+                );
+              },
               icon: const Icon(
                 Icons.logout,
                 color: Colors.black,
@@ -46,28 +65,34 @@ class DashboardScreen extends StatelessWidget {
           crossAxisSpacing: 50,
           crossAxisCount: 2,
           children: List.generate(6, (index) {
-            return Card(
-              shadowColor: Colors.purpleAccent.shade200,
-              elevation: 20,
-              color: Colors.blueGrey.withOpacity(0.7),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Icon(
-                    icons[index],
-                    color: Colors.yellowAccent,
-                    size: 50,
-                  ),
-                  Text(
-                    label[index].toUpperCase(),
-                    style: const TextStyle(
-                        fontFamily: 'Acme',
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 2,
-                        fontSize: 24,
-                        color: Colors.yellowAccent),
-                  )
-                ],
+            return InkWell(
+              onTap: () {
+                Navigator.push((context),
+                    MaterialPageRoute(builder: (context) => pages[index]));
+              },
+              child: Card(
+                shadowColor: Colors.purpleAccent.shade200,
+                elevation: 20,
+                color: Colors.blueGrey.withOpacity(0.7),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(
+                      icons[index],
+                      color: Colors.yellowAccent,
+                      size: 50,
+                    ),
+                    Text(
+                      label[index].toUpperCase(),
+                      style: const TextStyle(
+                          fontFamily: 'Acme',
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 2,
+                          fontSize: 24,
+                          color: Colors.yellowAccent),
+                    )
+                  ],
+                ),
               ),
             );
           }),
