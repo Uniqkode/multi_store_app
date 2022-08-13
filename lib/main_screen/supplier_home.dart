@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_store_app/main_screen/dashboard.dart';
 import 'package:multi_store_app/main_screen/home.dart';
 import 'package:multi_store_app/main_screen/stores.dart';
+import 'package:multi_store_app/main_screen/upload_product.dart';
 import 'package:multi_store_app/minor_screens/category.dart';
 
 class SupplierHomeScreen extends StatefulWidget {
@@ -18,9 +19,7 @@ class _SupplierHomeScreenState extends State<SupplierHomeScreen> {
     CategoryScreen(),
     StoresScreen(),
     DashboardScreen(),
-    Center(
-      child: Text('Upload'),
-    )
+    UploadProductScreen(),
   ];
   @override
   Widget build(BuildContext context) {

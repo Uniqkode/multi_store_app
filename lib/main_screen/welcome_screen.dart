@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../widgets/yellow_button.dart';
@@ -25,6 +27,10 @@ class Welcomescreen extends StatefulWidget {
 
 class _WelcomescreenState extends State<Welcomescreen>
     with SingleTickerProviderStateMixin {
+  CollectionReference customers =
+      FirebaseFirestore.instance.collection('customers');
+  late String _uid;
+  bool processing = false;
   late AnimationController _controller;
   @override
   void initState() {
@@ -143,7 +149,7 @@ class _WelcomescreenState extends State<Welcomescreen>
                                 onPressed: () {
                                   Navigator.pushReplacementNamed(
                                     context,
-                                    '/supplier_home',
+                                    '/supplier_login',
                                   );
                                 },
                                 width: 0.25),
@@ -151,7 +157,12 @@ class _WelcomescreenState extends State<Welcomescreen>
                               padding: const EdgeInsets.only(right: 8),
                               child: YellowButton(
                                   btnLabel: ' Sign up',
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      '/supplier_signup',
+                                    );
+                                  },
                                   width: 0.25),
                             )
                           ],
@@ -184,7 +195,7 @@ class _WelcomescreenState extends State<Welcomescreen>
                               onPressed: () {
                                 Navigator.pushReplacementNamed(
                                   context,
-                                  '/customer_home',
+                                  '/cust_login',
                                 );
                               },
                               width: 0.25),
@@ -226,14 +237,41 @@ class _WelcomescreenState extends State<Welcomescreen>
                           image: AssetImage('images/inapp/facebook.jpg'),
                         ),
                       ),
-                      SocialsBTN(
-                          btnLabel: 'Guest',
-                          onPressed: () {},
-                          child: const Icon(
-                            Icons.person,
-                            size: 55,
-                            color: Colors.blueAccent,
-                          ))
+                      processing == true
+                          ? const CircularProgressIndicator(
+                              backgroundColor: Colors.purpleAccent,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.purple,
+                              ),
+                            )
+                          : SocialsBTN(
+                              btnLabel: 'Guest',
+                              onPressed: () async {
+                                setState(() {
+                                  processing = true;
+                                });
+                                await FirebaseAuth.instance
+                                    .signInAnonymously()
+                                    .whenComplete(() async {
+                                  _uid = FirebaseAuth.instance.currentUser!.uid;
+                                  await customers.doc(_uid).set({
+                                    'name': '',
+                                    'email': '',
+                                    'profileimage': '',
+                                    'phone': '',
+                                    'address': '',
+                                    'cid': _uid,
+                                  });
+                                });
+
+                                Navigator.pushReplacementNamed(
+                                    context, '/customer_home');
+                              },
+                              child: const Icon(
+                                Icons.person,
+                                size: 55,
+                                color: Colors.blueAccent,
+                              ))
                     ],
                   ),
                 ),

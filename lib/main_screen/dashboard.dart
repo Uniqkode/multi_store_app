@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/dashboard_components/balance.dart';
 import 'package:multi_store_app/dashboard_components/edit_profile.dart';
@@ -6,6 +7,8 @@ import 'package:multi_store_app/dashboard_components/my_store.dart';
 import 'package:multi_store_app/dashboard_components/statistics.dart';
 import 'package:multi_store_app/dashboard_components/supplier_orders.dart';
 import 'package:multi_store_app/widgets/appBar_widgets.dart';
+
+import '../widgets/alert_dialog.dart';
 
 List<String> label = [
   'my store',
@@ -46,10 +49,22 @@ class DashboardScreen extends StatelessWidget {
         title: const AppBarTitle(title: 'Dashboard'),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(
-                  context,
-                  '/welcome_screen',
+              onPressed: () async {
+                MyAlertDialog.showMyDialog(
+                  context: context,
+                  contentText: 'Do you want to logout',
+                  title: 'Log out',
+                  tabNo: () {
+                    Navigator.pop(context);
+                  },
+                  tabYes: () async {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(
+                      context,
+                      '/welcome_screen',
+                    );
+                  },
                 );
               },
               icon: const Icon(
@@ -88,7 +103,7 @@ class DashboardScreen extends StatelessWidget {
                           fontFamily: 'Acme',
                           fontWeight: FontWeight.w600,
                           letterSpacing: 2,
-                          fontSize: 24,
+                          fontSize: 20,
                           color: Colors.yellowAccent),
                     )
                   ],

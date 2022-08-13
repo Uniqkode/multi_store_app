@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/main_screen/cart.dart';
 import 'package:multi_store_app/main_screen/home.dart';
@@ -14,12 +15,14 @@ class CustomerHomeScreen extends StatefulWidget {
 
 class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
   int _selectedIndex = 0;
-  final List _tabs = const [
-    HomeScreen(),
-    CategoryScreen(),
-    StoresScreen(),
-    CartScreen(),
-    ProfileScreen()
+  final List _tabs = [
+    const HomeScreen(),
+    const CategoryScreen(),
+    const StoresScreen(),
+    const CartScreen(),
+    ProfileScreen(
+      documentId: FirebaseAuth.instance.currentUser!.uid,
+    )
   ];
   @override
   Widget build(BuildContext context) {

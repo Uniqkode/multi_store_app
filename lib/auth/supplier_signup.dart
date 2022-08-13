@@ -10,19 +10,19 @@ import '../widgets/auth_widgets.dart';
 import '../widgets/snackbars.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
-class CustomerReg extends StatefulWidget {
-  const CustomerReg({Key? key}) : super(key: key);
+class SupplierReg extends StatefulWidget {
+  const SupplierReg({Key? key}) : super(key: key);
 
   @override
-  State<CustomerReg> createState() => _CustomerRegState();
+  State<SupplierReg> createState() => _SupplierRegState();
 }
 
-class _CustomerRegState extends State<CustomerReg> {
+class _SupplierRegState extends State<SupplierReg> {
   late String email;
-  late String profileImage;
+  late String storeLogo;
   bool isProcessing = false;
   late String _uid;
-  late String name;
+  late String storeName;
   late String password;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
@@ -31,7 +31,7 @@ class _CustomerRegState extends State<CustomerReg> {
   dynamic _pickImageError;
   XFile? _imageFile;
   CollectionReference customers =
-      FirebaseFirestore.instance.collection('customers');
+      FirebaseFirestore.instance.collection('suppliers');
   final ImagePicker _picker = ImagePicker();
   void _pickImageFromCamera() async {
     try {
@@ -81,25 +81,25 @@ class _CustomerRegState extends State<CustomerReg> {
 
           firebase_storage.Reference ref = firebase_storage
               .FirebaseStorage.instance
-              .ref('cust-images/$email.jpg');
+              .ref('supplier-images/$email.jpg');
 
           await ref.putFile(File(_imageFile!.path));
           _uid = FirebaseAuth.instance.currentUser!.uid;
-          profileImage = await ref.getDownloadURL();
+          storeLogo = await ref.getDownloadURL();
           await customers.doc(_uid).set({
-            'name': name,
+            'storename': storeName,
             'email': email,
-            'profileimage': profileImage,
+            'storelogo': storeLogo,
             'phone': '',
-            'address': '',
-            'cid': _uid,
+            'sid': _uid,
+            'coverimage': '',
           });
 
           _formKey.currentState!.reset();
           setState(() {
             _imageFile = null;
           });
-          Navigator.pushReplacementNamed(context, '/cust_login');
+          Navigator.pushReplacementNamed(context, '/supplier_login');
         } on FirebaseAuthException catch (e) {
           if (e.code == 'weak-password') {
             setState(() {
@@ -205,7 +205,7 @@ class _CustomerRegState extends State<CustomerReg> {
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: TextFormField(
                           onChanged: (value) {
-                            name = (value);
+                            storeName = (value);
                           },
                           validator: (value) {
                             if (value!.isEmpty) {
@@ -285,7 +285,7 @@ class _CustomerRegState extends State<CustomerReg> {
                         haveaccountLabel: 'login',
                         onPressed: () {
                           Navigator.pushReplacementNamed(
-                              context, '/cust_login');
+                              context, '/supplier_home');
                         },
                       ),
                       isProcessing == true
