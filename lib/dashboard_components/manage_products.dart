@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/widgets/appBar_widgets.dart';
+import 'package:multi_store_app/widgets/appbar_widgets.dart';
 
 class ManageBusiness extends StatelessWidget {
   const ManageBusiness({Key? key}) : super(key: key);

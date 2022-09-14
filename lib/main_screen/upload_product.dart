@@ -2,10 +2,15 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_store_app/utilities/categ_list.dart';
 import 'package:multi_store_app/widgets/snackbars.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:path/path.dart' as path;
+import 'package:uuid/uuid.dart';
 
 class UploadProductScreen extends StatefulWidget {
   const UploadProductScreen({Key? key}) : super(key: key);
@@ -21,15 +26,18 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
   late double price;
   late int quantity;
   late String proName;
+  late String proId;
   late String proDesc;
   String mainCategValue = 'select category';
   String subCategValue = 'subcategory';
   dynamic _pickImageError;
   List<XFile>? imageFileList = [];
+  List<String> imageUrlList = [];
   List<String> subCategList = [];
+  bool processing = false;
 
   final ImagePicker _picker = ImagePicker();
-  void _pickProductPictures() async {
+  void pickProductPictures() async {
     try {
       final pickedImages = await _picker.pickMultiImage(
           maxHeight: 300, maxWidth: 300, imageQuality: 95);
@@ -95,30 +103,80 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
     });
   }
 
-  void uploadProduct() {
-    if (_formkey.currentState!.validate()) {
-      _formkey.currentState!.save();
-      if (imageFileList!.isNotEmpty) {
-        print('image picked');
-        print('Valid');
-        print(price);
-        print(quantity);
-        print(proName);
-        print(proDesc);
-        setState(() {
-          imageFileList = [];
-        });
-        _formkey.currentState!.reset();
+  Future<void> uploadImages() async {
+    if (mainCategValue != 'select category' && subCategValue != 'subcategory') {
+      if (_formkey.currentState!.validate()) {
+        _formkey.currentState!.save();
+        if (imageFileList!.isNotEmpty) {
+          setState(() {
+            processing = true;
+          });
+          try {
+            for (var image in imageFileList!) {
+              firebase_storage.Reference ref = firebase_storage
+                  .FirebaseStorage.instance
+                  .ref('products/${path.basename(image.path)}');
+
+              await ref.putFile(File(image.path)).whenComplete(() async {
+                await ref.getDownloadURL().then((value) {
+                  imageUrlList.add(value);
+                });
+              });
+            }
+          } catch (e) {
+            print(e);
+          }
+        } else {
+          MyMessageHandler.showSnackBar(
+              _scaffoldKey, 'please pick product images');
+        }
       } else {
-        MyMessageHandler.showSnackBar(_scaffoldKey, 'please pick an image');
+        MyMessageHandler.showSnackBar(_scaffoldKey, 'please fill all fields');
       }
     } else {
-      MyMessageHandler.showSnackBar(_scaffoldKey, 'please fill all fields');
+      MyMessageHandler.showSnackBar(_scaffoldKey, 'please select category');
     }
+  }
+
+  void uploadData() async {
+    if (imageUrlList.isNotEmpty) {
+      CollectionReference prodRef =
+          FirebaseFirestore.instance.collection('products');
+
+      proId = const Uuid().v4();
+      await prodRef.doc(proId).set({
+        'proid': proId,
+        'maincateg': mainCategValue,
+        'subcateg': subCategValue,
+        'price': price,
+        'instock': quantity,
+        'prodname': proName,
+        'prodesc': proDesc,
+        'sid': FirebaseAuth.instance.currentUser!.uid,
+        'prodimages': imageUrlList,
+        'discount': 0,
+      }).whenComplete(() {
+        setState(() {
+          imageFileList = [];
+          mainCategValue = 'select category';
+          subCategList = [];
+          imageUrlList = [];
+          processing = false;
+        });
+        _formkey.currentState!.reset();
+      });
+    } else {
+      print('no images');
+    }
+  }
+
+  void uploadProduct() async {
+    await uploadImages().whenComplete(() => uploadData());
   }
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return ScaffoldMessenger(
       key: _scaffoldKey,
       child: Scaffold(
@@ -135,8 +193,8 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                     children: [
                       Container(
                         color: Colors.blueGrey.shade100,
-                        height: MediaQuery.of(context).size.width * .5,
-                        width: MediaQuery.of(context).size.width * .5,
+                        height: size.width * .5,
+                        width: size.width * .5,
                         child: imageFileList != null
                             ? previewimages()
                             : const Center(
@@ -149,39 +207,67 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
                                 ),
                               ),
                       ),
-                      Column(
-                        children: [
-                          const Text('select main category'),
-                          DropdownButton(
-                              value: mainCategValue,
-                              items: maincateg
-                                  .map<DropdownMenuItem<String>>((value) {
-                                return DropdownMenuItem(
-                                  child: Text(value),
-                                  value: value,
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                selectMainCateg(value);
-                              }),
-                          const Text('select sub category'),
-                          DropdownButton(
-                              disabledHint: const Text('select category'),
-                              value: subCategValue,
-                              items: subCategList
-                                  .map<DropdownMenuItem<String>>((value) {
-                                return DropdownMenuItem(
-                                  child: Text(value),
-                                  value: value,
-                                );
-                              }).toList(),
-                              onChanged: (String? value) {
-                                print(value);
-                                setState(() {
-                                  subCategValue = value!;
-                                });
-                              })
-                        ],
+                      SizedBox(
+                        height: size.width * .5,
+                        width: size.width * .5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              children: [
+                                const Text(
+                                  '* select main category',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                DropdownButton(
+                                    iconSize: 40,
+                                    iconEnabledColor: Colors.red,
+                                    dropdownColor: Colors.yellow.shade400,
+                                    value: mainCategValue,
+                                    items: maincateg
+                                        .map<DropdownMenuItem<String>>((value) {
+                                      return DropdownMenuItem(
+                                        child: Text(value),
+                                        value: value,
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? value) {
+                                      selectMainCateg(value);
+                                    }),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                const Text(
+                                  '* select subcategory',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                DropdownButton(
+                                    iconSize: 40,
+                                    menuMaxHeight: 500,
+                                    iconEnabledColor: Colors.red,
+                                    iconDisabledColor: Colors.black,
+                                    dropdownColor: Colors.yellow.shade400,
+                                    disabledHint: const Text('select category'),
+                                    value: subCategValue,
+                                    items: subCategList
+                                        .map<DropdownMenuItem<String>>((value) {
+                                      return DropdownMenuItem(
+                                        child: Text(value),
+                                        value: value,
+                                      );
+                                    }).toList(),
+                                    onChanged: (String? value) {
+                                      print(value);
+                                      setState(() {
+                                        subCategValue = value!;
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -300,7 +386,7 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
               child: FloatingActionButton(
                 onPressed: imageFileList!.isEmpty
                     ? () {
-                        _pickProductPictures();
+                        pickProductPictures();
                       }
                     : () {
                         setState(() {
@@ -320,14 +406,23 @@ class _UploadProductScreenState extends State<UploadProductScreen> {
               ),
             ),
             FloatingActionButton(
-              onPressed: () {
-                uploadProduct();
-              },
+              onPressed: processing == true
+                  ? null
+                  : () {
+                      uploadProduct();
+                    },
               backgroundColor: Colors.yellow,
-              child: const Icon(
-                Icons.upload,
-                color: Colors.black,
-              ),
+              child: processing == true
+                  ? const CircularProgressIndicator(
+                      backgroundColor: Colors.black54,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.black,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.upload,
+                      color: Colors.black,
+                    ),
             ),
           ],
         ),

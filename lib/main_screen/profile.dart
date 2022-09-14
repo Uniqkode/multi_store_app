@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:multi_store_app/customer_components/cust_orders.dart';
 import 'package:multi_store_app/customer_components/wishlist.dart';
 import 'package:multi_store_app/main_screen/cart.dart';
-import 'package:multi_store_app/widgets/appBar_widgets.dart';
+import 'package:multi_store_app/widgets/appbar_widgets.dart';
 
 import '../widgets/alert_dialog.dart';
 
@@ -24,8 +24,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     CollectionReference customers =
         FirebaseFirestore.instance.collection('customers');
+    CollectionReference anonymous =
+        FirebaseFirestore.instance.collection('anonymous');
     return FutureBuilder<DocumentSnapshot>(
-      future: customers.doc(widget.documentId).get(),
+      future: FirebaseAuth.instance.currentUser!.isAnonymous
+          ? anonymous.doc(widget.documentId).get()
+          : customers.doc(widget.documentId).get(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
