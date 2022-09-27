@@ -14,6 +14,7 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:provider/provider.dart';
 import '../models/product_model.dart';
 import 'package:collection/collection.dart';
+import 'package:badges/badges.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final dynamic proList;
@@ -32,12 +33,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var exsitingCartItem = context.read<Cart>().getItems.firstWhereOrNull(
+        (product) => product.doumentId == widget.proList['proid']);
+    var existingWishlistItem = context.read<Wish>().getWish.firstWhereOrNull(
+        (product) => product.doumentId == widget.proList['proid']);
     final Stream<QuerySnapshot> _productStream = FirebaseFirestore.instance
         .collection('products')
         .where('maincateg', isEqualTo: widget.proList['maincateg'])
         .where('subcateg', isEqualTo: widget.proList['subcateg'])
         .snapshots();
-
     return Material(
       child: SafeArea(
         child: ScaffoldMessenger(
@@ -141,11 +145,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               IconButton(
                                 color: Colors.red,
                                 onPressed: () {
-                                  context.read<Wish>().getWish.firstWhereOrNull(
-                                              (product) =>
-                                                  product.doumentId ==
-                                                  widget.proList['proid']) !=
-                                          null
+                                  existingWishlistItem != null
                                       ? context
                                           .read<Wish>()
                                           .removeThis(widget.proList['proid'])
@@ -285,17 +285,30 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     builder: (context) => const CartScreen(
                                         back: AppBarBackButton())));
                           },
-                          icon: const Icon(Icons.shopping_cart)),
+                          icon: Badge(
+                              showBadge: context.read<Cart>().getItems.isEmpty
+                                  ? false
+                                  : true,
+                              padding: const EdgeInsets.all(2),
+                              badgeColor: Colors.yellow,
+                              badgeContent: Text(
+                                context
+                                    .watch<Cart>()
+                                    .getItems
+                                    .length
+                                    .toString(),
+                                style: const TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w600),
+                              ),
+                              child: const Icon(Icons.shopping_cart))),
                     ],
                   ),
                   YellowButton(
-                      btnLabel: 'ADD TO CART',
+                      btnLabel: exsitingCartItem != null
+                          ? 'added to cart'.toUpperCase()
+                          : 'ADD TO CART',
                       onPressed: () {
-                        context.read<Cart>().getItems.firstWhereOrNull(
-                                    (product) =>
-                                        product.doumentId ==
-                                        widget.proList['proid']) !=
-                                null
+                        exsitingCartItem != null
                             ? MyMessageHandler.showSnackBar(
                                 _scaffoldKey, 'Item already in Cart!')
                             : context.read<Cart>().addItems(

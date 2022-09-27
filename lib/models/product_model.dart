@@ -20,6 +20,8 @@ class ProductModel extends StatefulWidget {
 class _ProductModelState extends State<ProductModel> {
   @override
   Widget build(BuildContext context) {
+    var existingWishlistItem = context.read<Wish>().getWish.firstWhereOrNull(
+        (product) => product.doumentId == widget.product['proid']);
     return InkWell(
       onTap: () {
         Navigator.push(
@@ -74,11 +76,7 @@ class _ProductModelState extends State<ProductModel> {
                             : IconButton(
                                 color: Colors.red,
                                 onPressed: () {
-                                  context.read<Wish>().getWish.firstWhereOrNull(
-                                              (product) =>
-                                                  product.doumentId ==
-                                                  widget.product['proid']) !=
-                                          null
+                                  existingWishlistItem != null
                                       ? context
                                           .read<Wish>()
                                           .removeThis(widget.product['proid'])

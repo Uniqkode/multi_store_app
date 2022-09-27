@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/main_screen/cart.dart';
@@ -5,6 +6,9 @@ import 'package:multi_store_app/main_screen/home.dart';
 import 'package:multi_store_app/main_screen/profile.dart';
 import 'package:multi_store_app/main_screen/stores.dart';
 import 'package:multi_store_app/minor_screens/category.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/cart_provider.dart';
 
 class CustomerHomeScreen extends StatefulWidget {
   const CustomerHomeScreen({Key? key}) : super(key: key);
@@ -39,24 +43,34 @@ class _CustomerHomeScreenState extends State<CustomerHomeScreen> {
               _selectedIndex = index;
             });
           },
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.search),
               label: 'Category',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.shop),
               label: 'Stores',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_cart),
+              icon: Badge(
+                  showBadge:
+                      context.read<Cart>().getItems.isEmpty ? false : true,
+                  padding: const EdgeInsets.all(2),
+                  badgeColor: Colors.yellow,
+                  badgeContent: Text(
+                    context.watch<Cart>().getItems.length.toString(),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w600),
+                  ),
+                  child: const Icon(Icons.shopping_cart)),
               label: 'Cart',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Profile',
             ),

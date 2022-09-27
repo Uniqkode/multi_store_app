@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/cart_provider.dart';
+import '../models/wishlist_model.dart';
 import '../providers/wishlist_provider.dart';
 import '../widgets/alert_dialog.dart';
 import '../widgets/appbar_widgets.dart';
-import 'package:collection/collection.dart';
 
 class Wishlist extends StatefulWidget {
   const Wishlist({
@@ -34,7 +33,7 @@ class _WishListState extends State<Wishlist> {
                     MyAlertDialog.showMyDialog(
                         context: context,
                         title: 'Clear Wishlist',
-                        contentText: 'Are you sure to clear wishlist ?',
+                        contentText: 'you want to clear wishlist ?',
                         tabNo: () {
                           Navigator.pop(context);
                         },
@@ -89,106 +88,7 @@ class WishItems extends StatelessWidget {
           itemCount: wish.count,
           itemBuilder: (context, index) {
             final product = wish.getWish[index];
-            return Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: Card(
-                child: SizedBox(
-                  height: 100,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        width: 120,
-                        child: Image.network(
-                          product.imageUrl.first,
-                        ),
-                      ),
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                product.name,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey.shade700),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    product.price.toStringAsFixed(2),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            context
-                                                .read<Wish>()
-                                                .removeItem(product);
-                                          },
-                                          icon:
-                                              const Icon(Icons.delete_forever)),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      context
-                                                  .watch<Cart>()
-                                                  .getItems
-                                                  .firstWhereOrNull((element) =>
-                                                      element.doumentId ==
-                                                      product.doumentId) !=
-                                              null
-                                          ? const SizedBox()
-                                          : IconButton(
-                                              onPressed: () {
-                                                // context
-                                                //             .read<Cart>()
-                                                //             .getItems
-                                                //             .firstWhereOrNull(
-                                                //                 (element) =>
-                                                //                     element
-                                                //                         .doumentId ==
-                                                //                     product
-                                                //                         .doumentId) !=
-                                                //         null
-                                                //     ? print('already in cart')
-                                                context.read<Cart>().addItems(
-                                                      product.name,
-                                                      product.price,
-                                                      1,
-                                                      product.quantity,
-                                                      product.imageUrl,
-                                                      product.doumentId,
-                                                      product.suppId,
-                                                    );
-                                              },
-                                              icon: const Icon(
-                                                  Icons.add_shopping_cart))
-                                    ],
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
+            return WishlistModel(product: product);
           });
     });
   }
