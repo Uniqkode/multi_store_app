@@ -7,6 +7,7 @@ import 'package:multi_store_app/widgets/appbar_widgets.dart';
 import 'package:multi_store_app/widgets/yellow_button.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:sn_progress_dialog/sn_progress_dialog.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({
@@ -18,14 +19,24 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  bool isProcessing = false;
   int selectedValue = 1;
   late String orderId;
+  CollectionReference customers =
+      FirebaseFirestore.instance.collection('customers');
+  void showProgress() {
+    ProgressDialog progress = ProgressDialog(context: context);
+    progress.show(
+        max: 100,
+        msg: 'Please wait',
+        progressBgColor: Colors.red,
+        progressValueColor: Colors.white);
+  }
+
   @override
   Widget build(BuildContext context) {
-    var totalPrice = context.watch<Cart>().totalPrice;
-    var totalPaid = context.watch<Cart>().totalPrice + 10.0;
-    CollectionReference customers =
-        FirebaseFirestore.instance.collection('customers');
+    double totalPrice = context.watch<Cart>().totalPrice;
+    double totalPaid = context.watch<Cart>().totalPrice + 10.0;
 
     return FutureBuilder<DocumentSnapshot>(
         future: customers.doc(FirebaseAuth.instance.currentUser!.uid).get(),
@@ -249,6 +260,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                     btnLabel:
                                                         'Confirm \$${totalPaid.toStringAsFixed(2)}',
                                                     onPressed: () async {
+                                                      showProgress();
                                                       for (var item in context
                                                           .read<Cart>()
                                                           .getItems) {
@@ -278,6 +290,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                           'sid': item.suppId,
                                                           'prodid':
                                                               item.doumentId,
+                                                          'ordername':
+                                                              item.name,
                                                           'orderid': orderId,
                                                           'orderimage': item
                                                               .imageUrl.first,
@@ -320,16 +334,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                                               'instock'] -
                                                                           item.qty
                                                                 });
-                                                            context
-                                                                .read<Cart>()
-                                                                .clearCart();
-                                                            Navigator.popUntil(
-                                                                context,
-                                                                ModalRoute.withName(
-                                                                    '/customer_home'));
                                                           });
                                                         });
                                                       }
+                                                      context
+                                                          .read<Cart>()
+                                                          .clearCart();
+                                                      Navigator.popUntil(
+                                                        context,
+                                                        ModalRoute.withName(
+                                                            '/customer_home'),
+                                                      );
                                                     },
                                                     width: 0.9)
                                               ],

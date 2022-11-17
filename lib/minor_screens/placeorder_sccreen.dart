@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/providers/cart_provider.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
-import 'package:multi_store_app/widgets/yellow_button.dart';
 import 'package:provider/provider.dart';
 
+import '../providers/cart_provider.dart';
+import '../widgets/appbar_widgets.dart';
+import '../widgets/yellow_button.dart';
 import 'payment_screen.dart';
 
 class PlaceOrderScreen extends StatefulWidget {
