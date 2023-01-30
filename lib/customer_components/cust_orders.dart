@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/widgets/appbar_widgets.dart';
 
+import '../models/cust_order_model.dart';
+
 class CustomerOrder extends StatelessWidget {
   const CustomerOrder({Key? key}) : super(key: key);
 
@@ -62,7 +64,7 @@ class CustomerOrder extends StatelessWidget {
           return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
-                return Text('chams');
+                return CustomerOrderModel(order: snapshot.data!.docs[index]);
               });
         },
       ),
