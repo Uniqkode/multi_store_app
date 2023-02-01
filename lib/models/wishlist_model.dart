@@ -71,7 +71,7 @@ class WishlistModel extends StatelessWidget {
                                                   element.doumentId ==
                                                   product.doumentId) !=
                                           null ||
-                                      product.qty == 0
+                                      product.quantity == 0
                                   ? const SizedBox()
                                   : IconButton(
                                       onPressed: () {
