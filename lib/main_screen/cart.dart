@@ -4,7 +4,7 @@ import 'package:multi_store_app/widgets/alert_dialog.dart';
 import 'package:provider/provider.dart';
 import '../minor_screens/placeorder_sccreen.dart';
 import '../models/cart_model.dart';
-import '../widgets/appbar_widgets.dart';
+import '../widgets/appBar_widgets.dart';
 
 class CartScreen extends StatefulWidget {
   final Widget? back;

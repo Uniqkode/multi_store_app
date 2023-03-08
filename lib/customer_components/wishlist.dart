@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/wishlist_model.dart';
 import '../providers/wishlist_provider.dart';
 import '../widgets/alert_dialog.dart';
-import '../widgets/appbar_widgets.dart';
+import '../widgets/appBar_widgets.dart';
 
 class Wishlist extends StatefulWidget {
   const Wishlist({

@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:multi_store_app/minor_screens/visit_store.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
+
+import '../widgets/appBar_widgets.dart';
 
 class StoresScreen extends StatelessWidget {
   const StoresScreen({Key? key}) : super(key: key);

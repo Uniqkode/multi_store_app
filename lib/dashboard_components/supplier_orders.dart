@@ -3,7 +3,8 @@ import 'package:multi_store_app/dashboard_components/delivered_orders.dart';
 import 'package:multi_store_app/dashboard_components/preparing_orders.dart';
 import 'package:multi_store_app/dashboard_components/shipping_orders.dart';
 import 'package:multi_store_app/main_screen/home.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
+
+import '../widgets/appBar_widgets.dart';
 
 class SupplierOrders extends StatelessWidget {
   const SupplierOrders({Key? key}) : super(key: key);

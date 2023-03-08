@@ -6,9 +6,9 @@ import 'package:multi_store_app/dashboard_components/manage_products.dart';
 import 'package:multi_store_app/dashboard_components/statistics.dart';
 import 'package:multi_store_app/dashboard_components/supplier_orders.dart';
 import 'package:multi_store_app/minor_screens/visit_store.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
 
 import '../widgets/alert_dialog.dart';
+import '../widgets/appBar_widgets.dart';
 
 List<String> label = [
   'my store',

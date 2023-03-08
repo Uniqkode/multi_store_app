@@ -1,13 +1,16 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:multi_store_app/providers/cart_provider.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
 import 'package:multi_store_app/widgets/yellow_button.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:sn_progress_dialog/sn_progress_dialog.dart';
+
+import '../widgets/appBar_widgets.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({

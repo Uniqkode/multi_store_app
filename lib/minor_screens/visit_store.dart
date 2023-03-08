@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../models/product_model.dart';
+import '../widgets/appBar_widgets.dart';
 
 class VisitStore extends StatefulWidget {
   final String suppId;

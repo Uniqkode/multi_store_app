@@ -6,7 +6,6 @@ import 'package:multi_store_app/minor_screens/full_screen_view.dart';
 import 'package:multi_store_app/minor_screens/visit_store.dart';
 import 'package:multi_store_app/providers/cart_provider.dart';
 import 'package:multi_store_app/providers/wishlist_provider.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
 import 'package:multi_store_app/widgets/snackbars.dart';
 import 'package:multi_store_app/widgets/yellow_button.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
@@ -14,7 +13,8 @@ import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:provider/provider.dart';
 import '../models/product_model.dart';
 import 'package:collection/collection.dart';
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as badges;
+import '../widgets/appBar_widgets.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final dynamic proList;
@@ -296,12 +296,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     builder: (context) => const CartScreen(
                                         back: AppBarBackButton())));
                           },
-                          icon: Badge(
+                          icon: badges.Badge(
                               showBadge: context.read<Cart>().getItems.isEmpty
                                   ? false
                                   : true,
-                              padding: const EdgeInsets.all(2),
-                              badgeColor: Colors.yellow,
+                              badgeStyle: const badges.BadgeStyle(
+                                padding: EdgeInsets.all(2),
+                                badgeColor: Colors.yellow,
+                              ),
                               badgeContent: Text(
                                 context
                                     .watch<Cart>()

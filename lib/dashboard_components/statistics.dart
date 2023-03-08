@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
+
+import '../widgets/appBar_widgets.dart';
 
 class Statistics extends StatelessWidget {
   const Statistics({Key? key}) : super(key: key);

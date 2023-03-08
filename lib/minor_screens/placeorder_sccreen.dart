@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cart_provider.dart';
-import '../widgets/appbar_widgets.dart';
+import '../widgets/appBar_widgets.dart';
 import '../widgets/yellow_button.dart';
 import 'payment_screen.dart';
 

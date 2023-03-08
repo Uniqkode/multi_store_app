@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:multi_store_app/customer_components/cust_orders.dart';
 import 'package:multi_store_app/customer_components/wishlist.dart';
 import 'package:multi_store_app/main_screen/cart.dart';
-import 'package:multi_store_app/widgets/appbar_widgets.dart';
 
 import '../widgets/alert_dialog.dart';
+import '../widgets/appBar_widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String documentId;
