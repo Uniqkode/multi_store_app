@@ -4,6 +4,7 @@ import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:multi_store_app/main_screen/cart.dart';
 import 'package:multi_store_app/minor_screens/full_screen_view.dart';
 import 'package:multi_store_app/minor_screens/visit_store.dart';
+import 'package:multi_store_app/models/product_model.dart';
 import 'package:multi_store_app/providers/cart_provider.dart';
 import 'package:multi_store_app/providers/wishlist_provider.dart';
 import 'package:multi_store_app/widgets/snackbars.dart';
@@ -11,7 +12,6 @@ import 'package:multi_store_app/widgets/yellow_button.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_grid_view.dart';
 import 'package:staggered_grid_view_flutter/widgets/staggered_tile.dart';
 import 'package:provider/provider.dart';
-import '../models/product_model.dart';
 import 'package:collection/collection.dart';
 import 'package:badges/badges.dart' as badges;
 import '../widgets/appBar_widgets.dart';
@@ -34,14 +34,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     var exsitingCartItem = context.read<Cart>().getItems.firstWhereOrNull(
-        (product) => product.doumentId == widget.proList['proid']);
+        (proList) => proList.doumentId == widget.proList['proid']);
     var existingWishlistItem = context.read<Wish>().getWish.firstWhereOrNull(
-        (product) => product.doumentId == widget.proList['proid']);
-    final Stream<QuerySnapshot> _productStream = FirebaseFirestore.instance
+        (proList) => proList.doumentId == widget.proList['proid']);
+    final Stream<QuerySnapshot> _proListStream = FirebaseFirestore.instance
         .collection('products')
         .where('maincateg', isEqualTo: widget.proList['maincateg'])
         .where('subcateg', isEqualTo: widget.proList['subcateg'])
         .snapshots();
+    var onSale = widget.proList['discount'];
     return Material(
       child: SafeArea(
         child: ScaffoldMessenger(
@@ -127,18 +128,41 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               Row(
                                 children: [
                                   const Text(
-                                    'USD ',
+                                    '\$ ',
                                     style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 16,
                                         color: Colors.red,
                                         fontWeight: FontWeight.w600),
                                   ),
+                                  onSale != 0
+                                      ? Text(
+                                          ((1 - (onSale / 100)) *
+                                                  widget.proList['price'])
+                                              .toStringAsFixed(2),
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.w600),
+                                        )
+                                      : const Text(''),
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
                                   Text(
-                                    widget.proList['price'].toStringAsFixed(2),
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w600),
+                                    '\$ ' +
+                                        widget.proList['price']
+                                            .toStringAsFixed(2),
+                                    style: onSale != 0
+                                        ? const TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.grey,
+                                            decoration:
+                                                TextDecoration.lineThrough,
+                                            fontWeight: FontWeight.w600)
+                                        : const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -151,7 +175,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                           .removeThis(widget.proList['proid'])
                                       : context.read<Wish>().addWishItems(
                                             widget.proList['prodname'],
-                                            widget.proList['price'],
+                                            onSale != 0
+                                                ? ((1 - (onSale / 100)) *
+                                                    widget.proList['price'])
+                                                : widget.proList['price'],
                                             1,
                                             widget.proList['instock'],
                                             widget.proList['prodimages'],
@@ -162,8 +189,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 icon: context
                                             .watch<Wish>()
                                             .getWish
-                                            .firstWhereOrNull((product) =>
-                                                product.doumentId ==
+                                            .firstWhereOrNull((proList) =>
+                                                proList.doumentId ==
                                                 widget.proList['proid']) !=
                                         null
                                     ? const Icon(
@@ -191,7 +218,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                     ),
                             ],
                           ),
-                          const ProductDetailsHeader(
+                          const ProListDetailsHeader(
                             label: '  Item description  ',
                           ),
                           Text(
@@ -202,12 +229,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 fontSize: 20,
                                 fontWeight: FontWeight.w600),
                           ),
-                          const ProductDetailsHeader(
+                          const ProListDetailsHeader(
                             label: '  Similar Items  ',
                           ),
                           SizedBox(
                             child: StreamBuilder<QuerySnapshot>(
-                              stream: _productStream,
+                              stream: _proListStream,
                               builder: (BuildContext context,
                                   AsyncSnapshot<QuerySnapshot> snapshot) {
                                 if (snapshot.hasError) {
@@ -330,7 +357,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         } else {
                           context.read<Cart>().addItems(
                                 widget.proList['prodname'],
-                                widget.proList['price'],
+                                onSale != 0
+                                    ? ((1 - (onSale / 100)) *
+                                        widget.proList['price'])
+                                    : widget.proList['price'],
                                 1,
                                 widget.proList['instock'],
                                 widget.proList['prodimages'],
@@ -350,9 +380,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 }
 
-class ProductDetailsHeader extends StatelessWidget {
+class ProListDetailsHeader extends StatelessWidget {
   final String label;
-  const ProductDetailsHeader({
+  const ProListDetailsHeader({
     required this.label,
     Key? key,
   }) : super(key: key);

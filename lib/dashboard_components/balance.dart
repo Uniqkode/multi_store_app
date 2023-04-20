@@ -43,7 +43,7 @@ class Balance extends StatelessWidget {
             ),
             body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   BalanceModel(
                     label: 'total balance',
@@ -51,7 +51,7 @@ class Balance extends StatelessWidget {
                     decimal: 2,
                   ),
                   const SizedBox(
-                    height: 40,
+                    height: 100,
                   ),
                   Container(
                     height: 35,
@@ -63,10 +63,11 @@ class Balance extends StatelessWidget {
                         onPressed: () {},
                         child: const Text(
                           'Withdraw',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 20),
                         )),
+                  ),
+                  const SizedBox(
+                    height: 60,
                   ),
                 ],
               ),
