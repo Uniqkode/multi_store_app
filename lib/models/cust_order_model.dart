@@ -45,7 +45,8 @@ class CustomerOrderModel extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(('\$ ') + (order['orderprice'].toString())),
+                          Text(('\$ ') +
+                              (order['orderprice'].toStringAsFixed(2))),
                           Text(('x ') + (order['orderqty'].toString()))
                         ],
                       ),

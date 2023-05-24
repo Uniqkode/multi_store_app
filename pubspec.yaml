@@ -49,6 +49,7 @@ dependencies:
   sn_progress_dialog: 
   firebase_core_platform_interface:
   flutter_datetime_picker:
+  flutter_stripe:
 
 dev_dependencies:
   flutter_test:
