@@ -62,10 +62,10 @@ class EmptyWishlist extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children:  [
           Text(
             'Your Wishlist is empty this time !',
             style: TextStyle(fontSize: 24),

@@ -104,10 +104,10 @@ class _VisitStoreState extends State<VisitStore> {
                                     borderRadius: BorderRadius.circular(25)),
                                 child: MaterialButton(
                                   onPressed: () {},
-                                  child: Row(
+                                  child: const Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
-                                    children: const [
+                                    children: [
                                       Text('EDIT'),
                                       Icon(
                                         Icons.edit,

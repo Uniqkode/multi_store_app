@@ -135,8 +135,8 @@ class CustomerOrderModel extends StatelessWidget {
                         : const Text(''),
                     order['deliverystatus'] == 'delivered' &&
                             order['orderreview'] == true
-                        ? Row(
-                            children: const [
+                        ? const Row(
+                            children: [
                               Icon(
                                 Icons.check,
                                 color: Colors.blue,

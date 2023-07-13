@@ -130,10 +130,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     )
                                   ],
                                 ),
-                                Row(
+                                const Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  children: const [
+                                  children: [
                                     Text(
                                       'Shipping cost',
                                       style: TextStyle(
@@ -180,8 +180,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       });
                                     },
                                     title: const Text('Pay with card'),
-                                    subtitle: Row(
-                                      children: const [
+                                    subtitle: const Row(
+                                      children: [
                                         Icon(
                                           Icons.payment,
                                           color: Colors.blue,
@@ -209,8 +209,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       });
                                     },
                                     title: const Text('Pay with paypal'),
-                                    subtitle: Row(
-                                      children: const [
+                                    subtitle: const Row(
+                                      children: [
                                         Icon(
                                           FontAwesomeIcons.paypal,
                                           color: Colors.blue,

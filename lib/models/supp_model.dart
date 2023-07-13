@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-
+import 'package:flutter_datetime_picker_bdaya/flutter_datetime_picker_bdaya.dart';
 class SupplierOrderModel extends StatelessWidget {
   final dynamic order;
   const SupplierOrderModel({Key? key, required this.order}) : super(key: key);
@@ -144,7 +143,7 @@ class SupplierOrderModel extends StatelessWidget {
                               order['deliverystatus'] == 'preparing'
                                   ? TextButton(
                                       onPressed: () {
-                                        DatePicker.showDatePicker(context,
+                                        DatePickerBdaya.showDatePicker(context,
                                             minTime: DateTime.now(),
                                             maxTime: DateTime.now()
                                                 .add(const Duration(days: 366)),
